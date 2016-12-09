@@ -15,6 +15,8 @@
     <script src="https://cs.wellesley.edu/~cs307/threejs/libs/OrbitControls.js"></script>
     <script type="text/javascript" src = "./backBuilding.js" ></script>
     <script type="text/javascript" src = "./window.js"></script>
+    <script type="text/javascript" src = "./indoor.js"></script>
+    <script src="bar-stool.js"></script>
   </head>
 <body>
 <script>
@@ -101,6 +103,13 @@ for(var i = 0; i < 5; i++){
 
 windowRow.position.set(-20, -29, -15.5);
 nighthawks.add(windowRow);
+indoorScene = indoor();
+indoorScene.scale.set(.25,.25,.25);
+indoorScene.rotation.y = -Math.PI/4;
+indoorScene.position.set(sceneParams.planeSegments/4,
+                        -sceneParams.planeSegments,
+                        sceneParams.planeSegments/4);
+nighthawks.add(indoorScene);
 
 scene.add(nighthawks);
 
@@ -134,7 +143,7 @@ var state = TW.cameraSetup(renderer,
                            scene,
                            {minx: -sceneParams.planeSegments/2, 
                             maxx: sceneParams.planeSegments/2,
-                            miny: -sceneParams.planeHeight*2,
+                            miny: -sceneParams.planeHeight*3,
                             maxy:sceneParams.planeHeight/2,
                             minz: -sceneParams.planeSegments/2, 
                             maxz: sceneParams.planeSegments/2},
