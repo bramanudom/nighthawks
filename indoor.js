@@ -60,7 +60,7 @@ function createTop(){
 var topCounter = new THREE.Object3D();
 
 var geometry = new THREE.PlaneGeometry( 7, 55, 32 );
-var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+var material = new THREE.MeshBasicMaterial( {color: 0x3C2B13, side: THREE.DoubleSide} );
 var plane = new THREE.Mesh( geometry, material );
 
 plane.rotation.x = Math.PI/2;
@@ -69,7 +69,7 @@ plane.position.y = sceneParams.baseRadius;
 
 
 var geometry2 = new THREE.PlaneGeometry( 7, 40, 32 );
-var material2 = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+var material2 = new THREE.MeshBasicMaterial( {color: 0x3C2B13, side: THREE.DoubleSide} );
 var plane2 = new THREE.Mesh( geometry2, material2 );
 
 plane2.rotation.x = Math.PI/2;
@@ -79,7 +79,7 @@ plane2.position.x = -15;
 plane2.position.z = 17;
 
 var geometry3 = new THREE.PlaneGeometry( 6.7, 42, 32 );
-var material3 = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+var material3 = new THREE.MeshBasicMaterial( {color: 0x3C2B13, side: THREE.DoubleSide} );
 var plane3 = new THREE.Mesh( geometry3, material3 );
 
 plane3.rotation.x = Math.PI/2;
@@ -90,7 +90,7 @@ plane3.position.z = 17;
 
 
 var geometryCorner = new THREE.SphereGeometry( 6.1, 32, 32 );
-var materialCorner = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+var materialCorner = new THREE.MeshBasicMaterial( {color: 0x3C2B13} );
 var sphereCorner = new THREE.Mesh( geometryCorner, materialCorner );
 
 sphereCorner.scale.set(.75,0,1);
@@ -98,7 +98,7 @@ sphereCorner.position.y = sceneParams.baseRadius;
 sphereCorner.position.x = -29
 
 var geometryCorner2 = new THREE.SphereGeometry( 3.3, 32, 32 );
-var materialCorner2 = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+var materialCorner2 = new THREE.MeshBasicMaterial( {color: 0x3C2B13} );
 var sphereCorner2 = new THREE.Mesh( geometryCorner, materialCorner );
 
 sphereCorner2.scale.set(1,0,.7);
@@ -108,7 +108,7 @@ sphereCorner2.position.z = 3.7;
 sphereCorner2.rotation.y = Math.PI/5;
 
 var geometryCorner3 = new THREE.SphereGeometry( 4.5, 32, 32 );
-var materialCorner3 = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+var materialCorner3 = new THREE.MeshBasicMaterial( {color: 0x3C2B13} );
 var sphereCorner3 = new THREE.Mesh( geometryCorner, materialCorner );
 
 sphereCorner3.scale.set(.7,0,.75);

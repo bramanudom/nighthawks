@@ -114,7 +114,10 @@ nighthawks.add(indoorScene);
 
 boba = Boba();
 
-boba.scale.set(.5,.5,.5);
+boba.scale.set(.25,.25,.25);
+boba.position.set(sceneParams.planeSegments/4,
+                        -sceneParams.planeSegments+6, // MAKE THIS MORE MODULAR LATER
+                        sceneParams.planeSegments/4);
 nighthawks.add(boba);
 scene.add(nighthawks);
 
