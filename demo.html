@@ -1,0 +1,149 @@
+<html>
+  <head>
+    <title>Nighthawks Window</title>
+    <style>
+      
+      canvas {
+          display: block;
+          width: 100%;
+          height: 100%;
+      }
+    </style>
+
+    <script src="https://cs.wellesley.edu/~cs307/threejs/libs/three-r80.min.js"></script>
+    <script src="https://cs.wellesley.edu/~cs307/threejs/libs/tw-fa16.js"></script>
+    <script src="https://cs.wellesley.edu/~cs307/threejs/libs/OrbitControls.js"></script>
+    <script type="text/javascript" src = "./backBuilding.js" ></script>
+    <script type="text/javascript" src = "./window.js"></script>
+  </head>
+<body>
+<script>
+
+//-------------------------
+// Some parameters
+//-------------------------
+var sceneParams = {
+  planeWidth: 5,
+  planeHeight: 25,
+  planeSegments: 50,
+  topColor: 0x0A1827, //dark midnight for the
+  botColor: 0x285D48, //cool dark greyish teal
+  sillHeight: 1,
+  buildingColor: 0x9B2C00,
+  sillColor: 0x734B18,
+
+  lightColor: 0xffffff,
+  // spotlightExponent: 200,
+  //                   spotlightIntensity: 2,
+  //                   spotlightDistance: 50,
+  //                   spotlightAngle: Math.PI/6,
+  //                   spotlightPenumbra: 0,
+  //                   spotlightDecay: 0.01,
+};
+//-------------------------
+// scene and renderer
+//-------------------------
+
+
+var scene = new THREE.Scene();
+var renderer = new THREE.WebGLRenderer();
+TW.mainInit(renderer, scene);
+
+//-------------------------
+// the containing room 
+//-------------------------
+function createRoom(){
+  //Creating the environment --> the room
+  var roomGeometry = new THREE.BoxGeometry(sceneParams.planeSegments,sceneParams.planeSegments*2,sceneParams.planeSegments);
+  var materialArray = [];
+
+  // [+X, -X, +Y, -Y, -Z, +Z]
+  // [right, left, ceiling, floor, back, front]
+  var faceColors = [sceneParams.topColor, sceneParams.topColor, sceneParams.topColor, sceneParams.botColor, sceneParams.topColor,sceneParams.topColor ];
+
+  for(var i = 0; i < 6; i++) {
+    if(i == 3){
+      materialArray.push(new THREE.MeshPhongMaterial({
+          color: faceColors[i],
+          side: THREE.DoubleSide,
+          depthTest: true}));
+    } else {
+      materialArray.push(new THREE.MeshPhongMaterial({
+          color: faceColors[i],
+          side: THREE.BackSide,
+          depthTest: true}));
+          }
+    }
+
+  var roomMaterial = new THREE.MeshFaceMaterial(materialArray);
+  var room = new THREE.Mesh(roomGeometry, roomMaterial);
+
+  return room;
+}
+
+//-------------------------
+// invoking objects 
+//-------------------------
+renderer.sortObjects = false;
+var nighthawks = new THREE.Object3D();
+nighthawks.add(createRoom());
+var backBuilding = backBuilding();
+backBuilding.position.set(0, -100/2+(15/2), -25+(10/2));
+nighthawks.add(backBuilding);
+
+var windowRow = new THREE.Object3D();
+for(var i = 0; i < 5; i++){
+  oneWindow = Window();
+  oneWindow.scale.set(.5,.5,1);
+  oneWindow.position.set(10*i, 0, 0);
+  windowRow.add(oneWindow);
+}
+
+windowRow.position.set(-20, -29, -15.5);
+nighthawks.add(windowRow);
+
+scene.add(nighthawks);
+
+
+
+
+
+//-------------------------
+// TESTING WITH LIGHTING
+//-------------------------
+
+    // //create a spotlight
+    // var spotLight = new THREE.SpotLight( sceneParams.lightColor );
+    // spotLight.name = "spot";
+    // spotLight.position.set(10,50,50); 
+
+    // spotLight.target.position.set = (0,20,30);
+    
+    // scene.add(spotLight);
+    // scene.add(spotLight.target);
+
+var ambLight = new THREE.AmbientLight( sceneParams.lightColor); // soft white light 
+    ambLight.name = "ambient";
+    scene.add( ambLight );
+//-------------------------
+// camera set-up
+//-------------------------
+
+var cameraFOVY = 100;
+var state = TW.cameraSetup(renderer,
+                           scene,
+                           {minx: -sceneParams.planeSegments/2, 
+                            maxx: sceneParams.planeSegments/2,
+                            miny: -sceneParams.planeHeight*2,
+                            maxy:sceneParams.planeHeight/2,
+                            minz: -sceneParams.planeSegments/2, 
+                            maxz: sceneParams.planeSegments/2},
+                           cameraFOVY);
+
+
+TW.render();
+
+  
+</script>
+</body>
+</html>
