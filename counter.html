@@ -136,6 +136,9 @@ function createCounter(){
 var base = createBase();
 var top = createTop();
 
+base.position.y = sceneParams.baseRadius;
+top.position.y = sceneParams.baseRadius;
+
 scene.add(base);
 scene.add(top);
 }
