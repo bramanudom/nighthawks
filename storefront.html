@@ -1,0 +1,162 @@
+<html>
+  <head>
+    <title>Nighthawks Storefront</title>
+    <style>
+      
+      body { margin: 0px; padding: 0px }
+
+      canvas {
+          display: block;
+          width: 100%;
+          height: 100%;
+      }
+
+    </style>
+    <script src="https://cs.wellesley.edu/~cs307/threejs/libs/three-r80.min.js"></script>
+    <script src="https://cs.wellesley.edu/~cs307/threejs/libs/tw.js"></script>
+    <script src="https://cs.wellesley.edu/~cs307/threejs/libs/OrbitControls.js"></script>
+  </head>
+<body>
+
+<script>
+
+var sceneParams = {
+  counterRadius: 10,
+  counterRadiusSegments:32,
+  radiusSegments: 2,
+  tubularSegments: 30,
+  woodColor: 0x00B777,
+  windowColor: 0xffffff,
+  wallColor: 0xEEEEB9,
+  metalShininess: 5,
+  baseRadius: 4,
+  spotlightColor: 0xffffff,
+  spotlightExponentt: 100,
+  sideWallHeight: 48,
+  sideWallWidth: 25,
+  sideWallDepth: 4,
+  backWallWidth: 60,
+  sideShortWallWidth: 20
+}
+
+var scene = new THREE.Scene();
+var renderer = new THREE.WebGLRenderer();
+
+TW.mainInit(renderer,scene);
+
+function createStore(){
+
+front = new THREE.Object3D();
+
+var curve = new THREE.CatmullRomCurve3( [
+  new THREE.Vector3( 15, 0, -25),
+  new THREE.Vector3( -30, 0, 10 ),
+  new THREE.Vector3( 35, 0, 30 )
+] );
+
+var geometry = new THREE.TubeGeometry( curve, sceneParams.tubularSegments, sceneParams.baseRadius, sceneParams.radiusSegments, false );
+var material = new THREE.MeshBasicMaterial( { color: sceneParams.woodColor } );
+var mesh = new THREE.Mesh( geometry, material );
+
+var curveWindow = new THREE.CatmullRomCurve3( [
+  new THREE.Vector3( 15, 0, -25),
+  new THREE.Vector3( -30, 0, 10 ),
+  new THREE.Vector3( 35, 0, 30 )
+] );
+
+var geometryWindow = new THREE.TubeGeometry( curveWindow, sceneParams.tubularSegments, sceneParams.baseRadius, sceneParams.radiusSegments, false );
+var materialWindow = new THREE.MeshBasicMaterial( { color: sceneParams.windowColor , transparent: true, opacity: 0.3 } );
+var meshWindow = new THREE.Mesh( geometryWindow, materialWindow );
+
+meshWindow.scale.set(1,4,1);
+meshWindow.position.y = sceneParams.baseRadius*5;
+
+var geometryWall = new THREE.BoxGeometry( sceneParams.sideWallWidth, sceneParams.sideWallHeight, sceneParams.sideWallDepth );
+var materialWall = new THREE.MeshBasicMaterial( {color: sceneParams.wallColor} );
+var sideWall = new THREE.Mesh( geometryWall, materialWall );
+
+sideWall.rotation.y = Math.PI/8;
+sideWall.position.x = 20;
+sideWall.position.z = -25;
+sideWall.position.y = 20;
+
+var geometryBackWall = new THREE.BoxGeometry( sceneParams.backWallWidth, sceneParams.sideWallHeight, sceneParams.sideWallDepth );
+var materialBackWall = new THREE.MeshBasicMaterial( {color: sceneParams.wallColor} );
+var backWall = new THREE.Mesh( geometryBackWall, materialBackWall );
+
+backWall.rotation.y = Math.PI/1.6;
+backWall.position.y = 20;
+backWall.position.x = 42;
+backWall.position.z = -3.7;
+
+var geometryShortWall = new THREE.BoxGeometry( sceneParams.sideShortWallWidth, sceneParams.sideWallHeight, sceneParams.sideWallDepth );
+var materialShortWall = new THREE.MeshBasicMaterial( {color: sceneParams.wallColor} );
+var sideShortWall = new THREE.Mesh( geometryShortWall, materialShortWall );
+
+sideShortWall.rotation.y = Math.PI/8;
+sideShortWall.position.x = 45;
+sideShortWall.position.z = 27;
+sideShortWall.position.y = 20;
+
+var geometryRoof = new THREE.TubeGeometry( curve, sceneParams.tubularSegments, sceneParams.baseRadius, sceneParams.radiusSegments, false );
+var materialRoof = new THREE.MeshBasicMaterial( { color: sceneParams.woodColor } );
+var meshRoof = new THREE.Mesh( geometryRoof, materialRoof );
+
+meshRoof.position.y = 40;
+
+front.add(meshRoof);
+front.add(sideShortWall);
+front.add(sideWall);
+front.add(backWall);
+front.add(mesh);
+front.add(meshWindow);
+
+
+return front;
+
+}
+
+function createCounter(){
+
+var base = createStore();
+
+base.position.y = sceneParams.baseRadius;
+
+scene.add(base);
+}
+
+createCounter();
+
+var cameraFOVY = 100;
+
+//-------------------------
+// TESTING WITH LIGHTING
+//-------------------------
+
+    //create a spotlight
+    var spotLight = new THREE.SpotLight( sceneParams.spotlightColor );
+    spotLight.name = "spot";
+    spotLight.position.set(10,50,50); 
+
+    spotLight.target.position.set = (0,20,0);
+    
+    scene.add(spotLight);
+    scene.add(spotLight.target);
+
+var ambLight = new THREE.AmbientLight( sceneParams.ambLightColor); // soft white light 
+    ambLight.name = "ambient";
+    scene.add( ambLight );
+
+var state = TW.cameraSetup(renderer,
+                           scene,
+                           {minx: -10, maxx: 10,
+                            miny: 0, maxy: 30,
+                            minz: -30, maxz: 30},
+                           cameraFOVY);
+
+TW.render();
+
+</script>
+</body>
+</html>
+
