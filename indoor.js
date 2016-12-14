@@ -1,30 +1,4 @@
-
-<!-- INDOOOR SCENE SO FAR 12/8/16
-adri tan-->
-
-<html>
-  <head>
-    <title>Nighthawks Indoor Scene</title>
-    <style>
-      
-      body { margin: 0px; padding: 0px }
-
-      canvas {
-          display: block;
-          width: 100%;
-          height: 100%;
-      }
-
-    </style>
-    <script src="https://cs.wellesley.edu/~cs307/threejs/libs/three-r80.min.js"></script>
-    <script src="https://cs.wellesley.edu/~cs307/threejs/libs/tw.js"></script>
-    <script src="https://cs.wellesley.edu/~cs307/threejs/libs/OrbitControls.js"></script>
-    <script src="./bar-stool.js"></script>
-  </head>
-<body>
-
-<script>
-
+function indoor(){
 var sceneParams = {
   counterRadius: 10,
   counterRadiusSegments:32,
@@ -59,10 +33,10 @@ var sceneParams1 = {
 
 }
 
-var scene = new THREE.Scene();
-var renderer = new THREE.WebGLRenderer();
 
-TW.mainInit(renderer,scene);
+var indoorScene = new THREE.Object3D();
+
+
 
 function createBase(){
 
@@ -378,46 +352,17 @@ stool.position.z = 40;
 
 stool2 = stool.clone();
 stool2.position.x = -55;
-stool2.position.z = 15;
+stool2.position.z = 20;
 
-scene.add(cannister);
-scene.add(cannister2);
-scene.add(counter);
-scene.add(stool);
-scene.add(stool2);
+indoorScene.add(cannister);
+indoorScene.add(cannister2);
+indoorScene.add(counter);
+indoorScene.add(stool);
+indoorScene.add(stool2);
+
+return indoorScene;
 
 
 
-var cameraFOVY = 100;
 
-//-------------------------
-// TESTING WITH LIGHTING
-//-------------------------
-
-    //create a spotlight
-    var spotLight = new THREE.SpotLight( sceneParams.spotlightColor );
-    spotLight.name = "spot";
-    spotLight.position.set(10,50,50); 
-
-    spotLight.target.position.set = (0,20,0);
-    
-    scene.add(spotLight);
-    scene.add(spotLight.target);
-
-var ambLight = new THREE.AmbientLight( sceneParams.ambLightColor); // soft white light 
-    ambLight.name = "ambient";
-    scene.add( ambLight );
-
-var state = TW.cameraSetup(renderer,
-                           scene,
-                           {minx: -20, maxx: 20,
-                            miny: 0, maxy: 40,
-                            minz: -10, maxz: 60},
-                           cameraFOVY);
-
-TW.render();
-
-</script>
-</body>
-</html>
-
+}
