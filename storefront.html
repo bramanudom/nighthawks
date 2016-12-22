@@ -119,27 +119,28 @@ return front;
 
 }
 
-function createCeiling(){
+function createCeiling(c){
+
   ceiling = new THREE.Object3D();
 
   var geometry = new THREE.PlaneGeometry( sceneParams.ceilingRectangleHeight, sceneParams.ceilingRectangleWidth );
-  var material = new THREE.MeshBasicMaterial( {color: sceneParams.wallColor, side: THREE.DoubleSide} );
+  var material = new THREE.MeshBasicMaterial( {color: c, side: THREE.DoubleSide} );
   var rectangle = new THREE.Mesh( geometry, material );
 
   var geometry2 = new THREE.PlaneGeometry( sceneParams.ceilingRectangleHeight*.85, sceneParams.ceilingRectangleWidth*.95 );
-  var material2 = new THREE.MeshBasicMaterial( {color: sceneParams.wallColor, side: THREE.DoubleSide} );
+  var material2 = new THREE.MeshBasicMaterial( {color: c, side: THREE.DoubleSide} );
   var rectangle2 = new THREE.Mesh( geometry2, material2 );
 
   var geometry3 = new THREE.PlaneGeometry( sceneParams.ceilingRectangleHeight, sceneParams.ceilingRectangleWidth*.9);
-  var material3 = new THREE.MeshBasicMaterial( {color: sceneParams.wallColor, side: THREE.DoubleSide} );
+  var material3 = new THREE.MeshBasicMaterial( {color: c, side: THREE.DoubleSide} );
   var rectangle3 = new THREE.Mesh( geometry3, material3 );
 
   var geometrySpot = new THREE.PlaneGeometry( sceneParams.ceilingSpotRadius*1.2, sceneParams.ceilingSpotRadius*1.2 );
-  var materialSpot = new THREE.MeshBasicMaterial( { color: sceneParams.wallColor} );
+  var materialSpot = new THREE.MeshBasicMaterial( { color: c} );
   var spot = new THREE.Mesh( geometrySpot, materialSpot );
 
   var geometryCorner = new THREE.CircleGeometry( sceneParams.ceilingSpotRadius*.5, sceneParams.counterRadiusSegments);
-  var materialCorner = new THREE.MeshBasicMaterial( { color: sceneParams.wallColor} );
+  var materialCorner = new THREE.MeshBasicMaterial( { color: c} );
   var spotCorner = new THREE.Mesh( geometryCorner, materialCorner );
 
   ceiling.add(rectangle);
@@ -151,7 +152,6 @@ function createCeiling(){
   ceiling.add(spotCorner);
 
   ceiling.rotation.x = Math.PI/2;
-  ceiling.position.y = sceneParams.sideWallHeight;
 
   rectangle.rotation.z = Math.PI/2.6;
   rectangle.position.y= -2;
@@ -183,12 +183,15 @@ function createCeiling(){
 function createCounter(){
 
 var base = createStore();
-var ceilings = createCeiling();
+var ceilings = createCeiling(sceneParams.wallColor);
+var floor = createCeiling(0xffffff);
 
+ceilings.position.y = sceneParams.sideWallHeight;
 base.position.y = sceneParams.baseRadius;
 
 scene.add(base);
 scene.add(ceilings);
+scene.add(floor);
 }
 
 createCounter();
