@@ -17,6 +17,7 @@
     <script type="text/javascript" src = "./window.js"></script>
     <script type="text/javascript" src = "./indoor.js"></script>
     <script src="bar-stool.js"></script>
+    <script src="storefront.js"></script>
     <script type="text/javascript" src = "./bramanudBoba.js"></script>
   </head>
 <body>
@@ -119,6 +120,17 @@ boba.position.set(sceneParams.planeSegments/4,
                         -sceneParams.planeSegments+6, // MAKE THIS MORE MODULAR LATER
                         sceneParams.planeSegments/4);
 nighthawks.add(boba);
+
+var store = createStoreFront();
+store.scale.set(.5,.5,.5);
+store.position.set(sceneParams.planeSegments/4.5,
+                        -sceneParams.planeSegments,
+                        sceneParams.planeSegments/4);
+store.rotation.y = -Math.PI/2;
+
+nighthawks.add(store);
+
+
 scene.add(nighthawks);
 
 
