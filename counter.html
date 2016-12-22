@@ -15,135 +15,19 @@
     <script src="https://cs.wellesley.edu/~cs307/threejs/libs/three-r80.min.js"></script>
     <script src="https://cs.wellesley.edu/~cs307/threejs/libs/tw.js"></script>
     <script src="https://cs.wellesley.edu/~cs307/threejs/libs/OrbitControls.js"></script>
+    <script src="counter.js"></script>
   </head>
 <body>
 
 <script>
 
-var sceneParams = {
-  counterRadius: 10,
-  counterRadiusSegments:32,
-  radiusSegments: 2,
-  tubularSegments: 30,
-  metalColor: 0x808080,
-  metalSpecular: 0x444444,
-  woodColor: 0x512B1E,
-  metalShininess: 5,
-  baseRadius: 4,
-  spotlightColor: 0xffffff,
-  spotlightExponentt: 100,
-
-}
-
 var scene = new THREE.Scene();
 var renderer = new THREE.WebGLRenderer();
 
+counter = createCounter();
+scene.add(counter);
+
 TW.mainInit(renderer,scene);
-
-function createBase(){
-
-var curve = new THREE.CatmullRomCurve3( [
-  new THREE.Vector3( 30, 0, 0),
-  new THREE.Vector3( -30, 0, 0 ),
-  new THREE.Vector3( 0, 0, 30 ),
-  new THREE.Vector3( 30, 0, 0)
-] );
-
-var geometry = new THREE.TubeGeometry( curve, sceneParams.tubularSegments, sceneParams.baseRadius, sceneParams.radiusSegments, false );
-var material = new THREE.MeshBasicMaterial( { color: sceneParams.woodColor } );
-var mesh = new THREE.Mesh( geometry, material );
-
-return mesh;
-
-}
-
-function createTop(){
-
-var topCounter = new THREE.Object3D();
-
-var geometry = new THREE.PlaneGeometry( 7, 55, 32 );
-var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-var plane = new THREE.Mesh( geometry, material );
-
-plane.rotation.x = Math.PI/2;
-plane.rotation.z = Math.PI/1.9;
-plane.position.y = sceneParams.baseRadius;
-
-
-var geometry2 = new THREE.PlaneGeometry( 7, 40, 32 );
-var material2 = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-var plane2 = new THREE.Mesh( geometry2, material2 );
-
-plane2.rotation.x = Math.PI/2;
-plane2.rotation.z = -Math.PI/4;
-plane2.position.y = sceneParams.baseRadius;
-plane2.position.x = -15;
-plane2.position.z = 17;
-
-var geometry3 = new THREE.PlaneGeometry( 6.7, 42, 32 );
-var material3 = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-var plane3 = new THREE.Mesh( geometry3, material3 );
-
-plane3.rotation.x = Math.PI/2;
-plane3.rotation.z = -Math.PI/1.3;
-plane3.position.y = sceneParams.baseRadius;
-plane3.position.x = 14;
-plane3.position.z = 17;
-
-
-var geometryCorner = new THREE.SphereGeometry( 6.1, 32, 32 );
-var materialCorner = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-var sphereCorner = new THREE.Mesh( geometryCorner, materialCorner );
-
-sphereCorner.scale.set(.75,0,1);
-sphereCorner.position.y = sceneParams.baseRadius;
-sphereCorner.position.x = -29
-
-var geometryCorner2 = new THREE.SphereGeometry( 3.3, 32, 32 );
-var materialCorner2 = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-var sphereCorner2 = new THREE.Mesh( geometryCorner, materialCorner );
-
-sphereCorner2.scale.set(1,0,.7);
-sphereCorner2.position.y = sceneParams.baseRadius;
-sphereCorner2.position.x = 25;
-sphereCorner2.position.z = 3.7;
-sphereCorner2.rotation.y = Math.PI/5;
-
-var geometryCorner3 = new THREE.SphereGeometry( 4.5, 32, 32 );
-var materialCorner3 = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-var sphereCorner3 = new THREE.Mesh( geometryCorner, materialCorner );
-
-sphereCorner3.scale.set(.7,0,.75);
-sphereCorner3.position.y = sceneParams.baseRadius;
-sphereCorner3.position.x = .35;
-sphereCorner3.position.z = 31;
-sphereCorner3.rotation.y = Math.PI/2;
-
-topCounter.add(plane);
-topCounter.add(plane2);
-topCounter.add(plane3);
-topCounter.add(sphereCorner);
-topCounter.add(sphereCorner2);
-topCounter.add(sphereCorner3);
-
-
-return topCounter;
-
-}
-
-function createCounter(){
-
-var base = createBase();
-var top = createTop();
-
-base.position.y = sceneParams.baseRadius;
-top.position.y = sceneParams.baseRadius;
-
-scene.add(base);
-scene.add(top);
-}
-
-createCounter();
 
 var cameraFOVY = 100;
 
@@ -152,7 +36,7 @@ var cameraFOVY = 100;
 //-------------------------
 
     //create a spotlight
-    var spotLight = new THREE.SpotLight( sceneParams.spotlightColor );
+    var spotLight = new THREE.SpotLight( 0xffffff );
     spotLight.name = "spot";
     spotLight.position.set(10,50,50); 
 
@@ -161,14 +45,14 @@ var cameraFOVY = 100;
     scene.add(spotLight);
     scene.add(spotLight.target);
 
-var ambLight = new THREE.AmbientLight( sceneParams.ambLightColor); // soft white light 
+var ambLight = new THREE.AmbientLight( 0xffffff); // soft white light 
     ambLight.name = "ambient";
     scene.add( ambLight );
 
 var state = TW.cameraSetup(renderer,
                            scene,
                            {minx: -10, maxx: 10,
-                            miny: 0, maxy: 30,
+                            miny: -50, maxy: 30,
                             minz: -10, maxz: 10},
                            cameraFOVY);
 

@@ -1,16 +1,36 @@
-//water cannister
+//   Water Cannister by Adrianna Tan
 
-//------------------------------------------------------------
-// Function is called to create water cannister.
-//------------------------------------------------------------
-function waterCannister(){
+//   Copyright (C) 2016  Adrianna Tan <atan4@wellesley.edu>
+//   December 2016
 
-var waterCannister = new THREE.Object3D();
+//   This program is free software: you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License as published by
+//   the Free Software Foundation, either version 3 of the License, or
+//   (at your option) any later version.
+
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License for more details.
+
+//   You should have received a copy of the GNU General Public License
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+//   This program creates an untextured bar stool that can change the color
+//   of the seat
+
+//   The base of the water cannister is placed at axis (0,0,0) 
+
+function createWaterCannister(){
+
+var cannister = new THREE.Object3D();
 
 var sceneParams = {
-  topCylinder: 6,
-  botCylinder: 6,
-  cylinderHeight: 3,
+  legRadius:2,
+  handleRadius: .3,
+  handleHeight: 3,
+  cylinderRadius: 4.5,
+  cylinderHeight: 15,
   radiusSegments: 32,
   metalColor: 0x808080,
   metalSpecular: 0x444444,
@@ -18,25 +38,17 @@ var sceneParams = {
   seatShininess: 30,
   metalShininess: 5,
   sphereRadius: 15,
-  phiStart: Math.PI/2,
-  phiLength: 6.3,
-  thetaStart: 0 ,
-  thetaLength: 0.4,
-  torusRadius: 5,
-  torusTube: .5,
-  torusArc: 100,
-  standHeight: 25,
+  spotlightColor: 0xffffff
 }
 
-
 //------------------------------------------------------------
-// Function is called to create four legs equally spaced out
-// to hold the water cannister upright
+// Function is used in createCanister() to add the four legs to 
+// the water cannister. The legs are created out of a mesh material
 //------------------------------------------------------------
 function createLeg(){
 
-  var leg = new THREE.Object3D();
-  var legs = new THREE.Object3D();
+  var leg = new THREE.Object3D(); //each leg contains thighMaterial, calfMaterial, and footMaterial
+  var legs = new THREE.Object3D(); //each leg is added
 
   var thighGeometry = new THREE.SphereGeometry( sceneParams.legRadius, sceneParams.radiusSegments, sceneParams.radiusSegments );
   var thighMaterial = new THREE.MeshPhongMaterial({color: sceneParams.metalColor,
@@ -56,6 +68,10 @@ function createLeg(){
                                              shininess: sceneParams.metalShininess});
   var footSphere = new THREE.Mesh( footGeometry, footMaterial );
   
+//------------------------------------------------------------
+// Difficult to modularize this part of the code in order to 
+// prevent parts of the calf and foot from sticking out improperly
+//------------------------------------------------------------
   thighSphere.scale.set(.3,1,.3);
   thighSphere.rotation.z = Math.PI/2.5;
 
@@ -73,10 +89,12 @@ function createLeg(){
   leg.add(thighSphere);
   leg.add(footSphere);
 
+  //three other legs are cloned to produce identical legs
   var leg2 = leg.clone();
   var leg3 = leg.clone();
   var leg4 = leg.clone();
 
+  //legs are rotated to be equally spaced from each other
   leg.position.y = sceneParams.legRadius*1.2;
   leg.position.x = sceneParams.cylinderRadius;
 
@@ -97,16 +115,18 @@ function createLeg(){
   legs.add(leg3);
   legs.add(leg4);
 
-  waterCannister.add(legs);
+  cannister.add(legs);
 }
 
 createLeg();
 
 //------------------------------------------------------------
-// Function is called to create the top handle of the cannister
+// Creates the top handle of the water cannister which consists
+// of two cylinders intersecting one another. one is larger than
+// the other
 //------------------------------------------------------------
 function createHandle(){
-  var handle = new THREE.Object3D();
+  var handle = new THREE.Object3D(); //handle contains both cylinders
 
   var geometry = new THREE.CylinderGeometry( sceneParams.handleRadius, sceneParams.handleRadius, sceneParams.handleHeight, sceneParams.radiusSegments );
   var material = new THREE.MeshPhongMaterial({color: sceneParams.metalColor,
@@ -114,27 +134,32 @@ function createHandle(){
                                              shininess: sceneParams.metalShininess});
   var cylinder1 = new THREE.Mesh( geometry, material );
 
-  cylinder1.rotation.x = (Math.PI /2);
-  cylinder1.position.y = (sceneParams.handleHeight *.6)/2;
-
-
   var geometry2 = new THREE.CylinderGeometry( sceneParams.handleRadius, sceneParams.handleRadius, sceneParams.handleHeight, sceneParams.radiusSegments );
   var material2 = new THREE.MeshPhongMaterial({color: sceneParams.metalColor,
                                              specular: sceneParams.metalSpecular,
                                              shininess: sceneParams.metalShininess});
   var cylinder2 = new THREE.Mesh( geometry, material );
+
+  cylinder1.rotation.x = (Math.PI /2);
+  cylinder1.position.y = (sceneParams.handleHeight *.6)/2;
+
   cylinder2.scale.set(.8,.6,.8);
 
   handle.add(cylinder1);
   handle.add(cylinder2);
 
-  waterCannister.add(handle);
+  handle.position.y = (sceneParams.cylinderHeight * 1.5 - sceneParams.handleHeight*.6) + sceneParams.legRadius;
 
+  cannister.add(handle);
 }
 
 createHandle();
 
-function createCylinder(){
+//------------------------------------------------------------
+// Creates the body of the water cannister using a CatmullRomCurve3
+// and a lathe object
+//------------------------------------------------------------
+function createBody(){
 
   var geometry = new THREE.CylinderGeometry( sceneParams.cylinderRadius, sceneParams.cylinderRadius, sceneParams.cylinderHeight, sceneParams.radiusSegments );
   var material = new THREE.MeshPhongMaterial({color: sceneParams.metalColor,
@@ -142,10 +167,12 @@ function createCylinder(){
                                              shininess: sceneParams.metalShininess});
   var cylinder = new THREE.Mesh( geometry, material );
 
-  waterCannister.add(cylinder);
+  cylinder.position.y = sceneParams.cylinderHeight/2 + sceneParams.legRadius;
+
+  cannister.add(cylinder);
 }
 
-createCylinder();
+createBody();
 
 //------------------------------------------------------------
 // Creates vertices for the Catmull object
@@ -160,16 +187,18 @@ function makeVertices(points) {
 
     return pts;
 }
-    
+ 
 //------------------------------------------------------------
-// Uses THREE.CatmullRomCurve3 instead of catmullObj as a substitute
-//------------------------------------------------------------
-function remakeCatmullObj() { 
+// Actually uses THREE.CatmullRomCurve3 instead of catmullObj as a substitute
+//------------------------------------------------------------   
+function remakeCatmullObj(catmull) { 
 
-  var catmullVertices = [ [3,0,0],
-               [0,0,3],
-               [-3,0,0]
-               ];
+  var catmullVertices = [ [5, 0],
+               [4, 2],
+               [1, 4],
+               [3, 2],
+               [1.5, 5],
+               [.5, 5.5] ];
 
     var mat = new THREE.MeshPhongMaterial({color: sceneParams.metalColor,
                                              specular: sceneParams.metalSpecular,
@@ -188,7 +217,7 @@ remakeCatmullObj();
 //------------------------------------------------------------
 // Makes Lathe object using vertices from catmullObj.
 //------------------------------------------------------------
-function remakeLatheObj(lathe) {
+function remakeLatheObj() {
     var geom = new THREE.LatheGeometry( catmullObj.geometry.vertices );
     var mat1 = new THREE.MeshPhongMaterial({color: sceneParams.metalColor,
                                              opacity: 0.6, 
@@ -199,11 +228,14 @@ function remakeLatheObj(lathe) {
                                            });
     latheObj = new THREE.Mesh (geom, mat1);
     latheObj.name = "lathe";
+    latheObj.position.y = sceneParams.cylinderHeight + sceneParams.legRadius;
 
-    waterCannister.add(latheObj);
+    cannister.add(latheObj);
 }
 
 remakeLatheObj();
 
-return waterCannister;
+return cannister;
+
 }
+

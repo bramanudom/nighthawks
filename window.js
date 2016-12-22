@@ -20,8 +20,6 @@ function Window(){
 
 	var theWindow = new THREE.Object3D();
 
-
-
 	//-------------------------
 	// CREATE WINDOW PANE
 	//-------------------------
@@ -129,6 +127,9 @@ function Window(){
 	return room;
 	}
 
+	//-------------------------
+	// CREATE WHOLE ROOM
+	//-------------------------
 	function createWholeRoom(){
 		var wholeRoom = new THREE.Object3D();
 
@@ -158,6 +159,9 @@ function Window(){
 
 	// createWholeRoom();
 
+	//-------------------------
+	// CREATES BUILDING BY ITERATING THE ROOMS
+	//-------------------------
 	function createBuilding(rows,columns){
 	//creates array matrix containing information about the rows and columns of rooms in the building
 	var rooms = [];
