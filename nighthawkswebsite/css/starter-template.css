@@ -1,25 +1,33 @@
 body {
 /*    padding-top: 50px;*/
-    
 }
+
+h2{
+    font-size: 6vw;
+}
+
 .starter-template {
     padding: 40px 15px;
     text-align: center;
 }
 
 #mainpage{
+    width: 100%;
     padding: 10%;
     color: white;
 }
 
 #mainpage h1{
-    padding: 10%;
-    font-size: 10em;
+    width: 100%;
+    padding: 12%;
+    font-size: 10vw;
 }
 
 .container{
     width: 100%;
     background-image: url(../imgs/nighthawks.png);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .container2{
@@ -29,3 +37,34 @@ body {
 #about{
     padding: 10%;
 }
+
+.container3 h2{
+    padding-left: 10%;
+}
+
+#process ul, #inside ul{
+    padding-top: 2%;
+    padding-left: 10%;
+    padding-bottom: 2%;
+    list-style: none;
+}
+
+#indoordescription{
+    padding-right: 10%;
+    padding-bottom: 10%;
+    padding-top:3%;
+    padding-left: 10%;
+}
+
+.row{
+    padding-top: 5%;
+    padding-bottom: 2%;
+/*    width: 100%;*/
+}
+
+.row img{
+    width: 100%;
+    padding-bottom: 10%;
+}
+
+
