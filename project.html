@@ -16,9 +16,12 @@
     <script type="text/javascript" src = "./backBuilding.js" ></script>
     <script type="text/javascript" src = "./window.js"></script>
     <script type="text/javascript" src = "./indoor.js"></script>
-    <script src="bar-stool.js"></script>
-    <script src="storefront.js"></script>
+    <script src="./bar-stool.js"></script>
+    <script src="./storefront.js"></script>
     <script type="text/javascript" src = "./bramanudBoba.js"></script>
+    <script type="text/javascript" src = "https://cs.wellesley.edu/~cs307/threejs/contrib/amclaugh_furniture/static/js/furniture.js"></script>
+    <script src="https://cs.wellesley.edu/~cs307/threejs/contrib/scarovil_fscottTeapot.js"></script>
+
   </head>
 <body>
 <script>
@@ -30,8 +33,8 @@ var sceneParams = {
   planeWidth: 5,
   planeHeight: 25,
   planeSegments: 50,
-  topColor: 0x0A1827, //dark midnight for the
-  botColor: 0x285D48, //cool dark greyish teal
+  topColor: 0x34495E, //dark midnight for the
+  botColor: 0x5DADE2, //cool dark greyish teal
   sillHeight: 1,
   buildingColor: 0x9B2C00,
   sillColor: 0x734B18,
@@ -40,13 +43,7 @@ var sceneParams = {
   winRowX: -20,
   winRowY: -29,
   winRowZ: -15.5,
-  // spotlightExponent: 200,
-  //                   spotlightIntensity: 2,
-  //                   spotlightDistance: 50,
-  //                   spotlightAngle: Math.PI/6,
-  //                   spotlightPenumbra: 0,
-  //                   spotlightDecay: 0.01,
-  // windowRow.position.set(-20, -29, -15.5);
+
 };
 //-------------------------
 // scene and renderer
@@ -55,127 +52,241 @@ var sceneParams = {
 
 var scene = new THREE.Scene();
 var renderer = new THREE.WebGLRenderer();
+
+//--------------
+// Create Entire Scene
+// Wrapping function allows us to load textures before creating // the scene 
+//--------------
+function createScene(){
+  TW.loadTextures(
+    ["./textures/concrete.jpg", "./textures/nightSky.jpg", "./textures/decorativeConcrete.jpg", "./textures/checkertile.jpg"],
+    function(textures){
+      console.log("textures have loaded");
+      textures[0].wrapS = THREE.RepeatWrapping;
+     // textures[0].wrapT = THREE.RepeatWrapping;
+      textures[0].repeat.set(1,1); 
+    
+
+      textures[1].wrapS = THREE.RepeatWrapping;
+      textures[1].wrapT = THREE.RepeatWrapping;
+
+
+      textures[2].wrapS = THREE.RepeatWrapping;
+      textures[2].wrapT = THREE.RepeatWrapping;
+      textures[2].repeat.set(4,4); 
+
+
+  //-------------------------
+  // the containing space for the entire scene 
+  //-------------------------
+    function createSpace(sky, ground, road){
+
+      //Inside of dome will be texture mapped 
+      space = new THREE.Object3D();
+      materialParams = {
+        color: sceneParams.topColor,
+        side: THREE.DoubleSide,
+        map: sky,
+        depthTest: true}
+      
+      roomGeometry = new THREE.SphereGeometry(90, 32, 32, 0, Math.PI*2, 0, Math.PI/2 );
+      roomMaterial = new THREE.MeshPhongMaterial(materialParams);
+
+      // GROUND PLANE 
+
+      planeGeometry = new THREE.PlaneGeometry( 200, 200, 32 );
+      materialParams.color = sceneParams.botColor;
+      materialParams.map = ground;
+      planeMaterial = new THREE.MeshPhongMaterial(materialParams);
+      
+
+      // CONCRETE ROAD 
+      materialParams.map = road;
+      materialParams.color = 0x283747;
+      roadGeom = new THREE.PlaneGeometry(20, 200, 32);
+      roadMat = new THREE.MeshPhongMaterial(materialParams);
+    
+      
+
+
+      plane = new THREE.Mesh( planeGeometry, planeMaterial);
+      room = new THREE.Mesh(roomGeometry, roomMaterial);
+      road = new THREE.Mesh(roadGeom, roadMat);
+
+      plane.rotation.x = -Math.PI/2;
+      road.rotation.x = -Math.PI/2;
+      road.rotation.z = -Math.PI/6;
+      road.position.set(-1, 1, 0);
+      space.add(room);
+      space.add(plane);
+      space.add(road);
+
+      return space;
+    }
+
+    //-------------------------
+    // invoking objects 
+    //-------------------------
+   
+    //aidan's furniture collection
+    var Furniture = new aidanFurniture();
+
+    renderer.sortObjects = false;
+    var nighthawks = new THREE.Object3D();
+    space = createSpace(textures[1], textures[2], textures[0]);
+    space.position.set(0,-50, 0);
+    nighthawks.add(space);
+
+    var otherBuilding = new THREE.Object3D();
+
+
+    backBuilding = backBuilding();
+    backBuilding.position.set(0, -100/2+(15/2), -25+(10/2));
+    otherBuilding.add(backBuilding);
+
+    var windowRow = new THREE.Object3D();
+    for(var i = 0; i < 5; i++){
+      oneWindow = Window();
+      oneWindow.scale.set(.5,.5,1);
+      oneWindow.position.set(10*i, 0, 0);
+      windowRow.add(oneWindow);
+
+      bed = Furniture.Bed();
+      bed.scale.set(2,2,2);
+      bed.position.set(10*i, -2, -7);
+
+      chair = Furniture.Chair();
+      chair.scale.set(2,2,2);
+      chair.position.set(10*i, -2, -3);
+      windowRow.add(chair);
+      windowRow.add(bed);
+    }
+    windowRow.position.set( sceneParams.winRowX, 
+                            sceneParams.winRowY, 
+                            sceneParams.winRowZ);
+
+    // add some furniture inside of the main building
+    // .. utilizes the Aidan's library contribution
+    var furnitureSet = new THREE.Object3D();
+    var table = Furniture.Table();
+    table.scale.set(3,3,3);
+    table.position.set(-20, -100/2, -25+(10/2));
+    var chair = Furniture.Chair();
+    chair.scale.set(3,3,3);
+    chair.position.set(-15,-100/2, -25+(10/2));
+    furnitureSet.add(table);
+
+    furnitureSet.add(chair);
+    otherBuilding.add(furnitureSet);
+
+    furnitureSet2 = furnitureSet.clone();
+   
+    furnitureSet2.position.x = 25;
+
+
+    var chair2 = chair.clone();
+    chair.position.x = 20;
+
+    
+    otherBuilding.add(furnitureSet2);
+    otherBuilding.add(chair2);
+    otherBuilding.add(windowRow);
+
+
+
+    //adding 3 more window rows
+    for (var j = 0; j < 3; j++){
+      newWindow = windowRow.clone();
+      newWindow.position.y = sceneParams.winRowY + ((j+1) * 10);
+      otherBuilding.add(newWindow);
+
+    }
+
+    // adding the building Sides
+    var buildingSideGeometry = new THREE.PlaneGeometry(11, 40, 32);
+    var buildingMaterial = new THREE.MeshPhongMaterial({
+              color: 0x3E421A,
+              side: THREE.DoubleSide,
+              depthTest: true});
+    var buildingSide = new THREE.Mesh(buildingSideGeometry,                                buildingMaterial);
+    buildingSide.position.set(-25, -15, -21);
+    buildingSide.rotation.y = Math.PI/2;
+
+    var buildingSide2 = buildingSide.clone();
+    buildingSide2.position.set(25, -15, -21);
+
+    var buildingBack = new THREE.Mesh(new THREE.PlaneGeometry(50,40,32), buildingMaterial);
+    buildingBack.position.set(0,-15, -26);
+
+
+
+    otherBuilding.add(buildingSide);
+    otherBuilding.add(buildingSide2);
+    otherBuilding.add(buildingBack);
+
+
+
+
+
+
+
+
+    // ADDING FULL DINER 
+
+    fullDiner = new THREE.Object3D();
+
+    indoorScene = indoor();
+    indoorScene.scale.set(.25,.25,.25);
+    indoorScene.rotation.y = -Math.PI/3;
+    indoorScene.position.set(sceneParams.planeSegments/3.4,
+                            -sceneParams.planeSegments,
+                            sceneParams.planeSegments/3.5);
+    boba = Boba();
+
+    boba.scale.set(.25,.25,.25);
+    boba.position.set(sceneParams.planeSegments/4,
+                            -sceneParams.planeSegments+6, // MAKE THIS MORE MODULAR LATER
+                            sceneParams.planeSegments/4);
+
+
+    var store = createStoreFront();
+    store.scale.set(.5,.5,.5);
+    store.position.set(sceneParams.planeSegments/4.5,
+                            -sceneParams.planeSegments,
+                            sceneParams.planeSegments/4);
+    store.rotation.y = -Math.PI/2;
+
+    fullDiner.add(indoorScene);
+    fullDiner.add(boba);
+    fullDiner.add(store);
+    fullDiner.rotation.y = Math.PI/2;
+    //place the diner slightly above the ground plane to avoid pixel rendering issues
+    fullDiner.position.set(20, 2, 0);
+
+    otherBuilding.position.set(-10,2,0);
+    otherBuilding2 = otherBuilding.clone();
+
+    otherBuilding2.scale.set(.5,.5,.5);
+    otherBuilding2.position.set(0,-22,-30);
+    otherBuilding.rotation.y = Math.PI/3;
+
+
+
+    nighthawks.add(fullDiner);
+    nighthawks.add(otherBuilding);
+    nighthawks.add(otherBuilding2);
+    nighthawks.position.set(0,0,10);
+    renderer.sortObjects = false
+
+
+
+    scene.add(nighthawks);
+    TW.render();
+    });
+}
+
+createScene();
 TW.mainInit(renderer, scene);
-
-//-------------------------
-// the containing space for the entire scene
-//-------------------------
-function createSpace(){
-
-  // -- ATTEMPTING TO TURN THE ROOM INTO A HALF DOME -- // 
-  space = new THREE.Object3D();
-
-  var roomGeometry = new THREE.SphereGeometry(70, 32, 32, 0, Math.PI*2, 0, Math.PI/2 );
-  var roomMaterial = new THREE.MeshPhongMaterial({
-          color: sceneParams.topColor,
-          side: THREE.DoubleSide,
-          depthTest: true});
-
-  // adding a plane as a ground 
-
-  var planeGeometry = new THREE.PlaneGeometry( 150, 150, 32 );
-  var planeMaterial = new THREE.MeshPhongMaterial({
-          color: sceneParams.botColor,
-          side: THREE.DoubleSide,
-          depthTest: true});
-  var plane = new THREE.Mesh( planeGeometry, planeMaterial );
-
-
-
-  var room = new THREE.Mesh(roomGeometry, roomMaterial);
-
-  plane.rotation.x = -Math.PI/2;
-
-
-  space.add(room);
-  space.add(plane);
-
-  return space;
-}
-
-//-------------------------
-// invoking objects 
-//-------------------------
-renderer.sortObjects = false;
-var nighthawks = new THREE.Object3D();
-space = createSpace();
-space.position.set(0,-50, 0);
-nighthawks.add(space);
-
-var otherBuilding = new THREE.Object3D();
-
-
-backBuilding = backBuilding();
-backBuilding.position.set(0, -100/2+(15/2), -25+(10/2));
-otherBuilding.add(backBuilding);
-
-var windowRow = new THREE.Object3D();
-for(var i = 0; i < 5; i++){
-  oneWindow = Window();
-  oneWindow.scale.set(.5,.5,1);
-  oneWindow.position.set(10*i, 0, 0);
-  windowRow.add(oneWindow);
-}
-windowRow.position.set( sceneParams.winRowX, 
-                        sceneParams.winRowY, 
-                        sceneParams.winRowZ);
-otherBuilding.add(windowRow);
-
-
-
-//adding 3 more window rows
-for (var j = 0; j < 3; j++){
-  newWindow = windowRow.clone();
-  newWindow.position.y = sceneParams.winRowY + ((j+1) * 10);
-  otherBuilding.add(newWindow);
-
-}
-
-
-
-
-// ADDING FULL DINER 
-
-fullDiner = new THREE.Object3D();
-
-indoorScene = indoor();
-indoorScene.scale.set(.25,.25,.25);
-indoorScene.rotation.y = -Math.PI/3;
-indoorScene.position.set(sceneParams.planeSegments/3.4,
-                        -sceneParams.planeSegments,
-                        sceneParams.planeSegments/3.5);
-boba = Boba();
-
-boba.scale.set(.25,.25,.25);
-boba.position.set(sceneParams.planeSegments/4,
-                        -sceneParams.planeSegments+6, // MAKE THIS MORE MODULAR LATER
-                        sceneParams.planeSegments/4);
-
-
-var store = createStoreFront();
-store.scale.set(.5,.5,.5);
-store.position.set(sceneParams.planeSegments/4.5,
-                        -sceneParams.planeSegments,
-                        sceneParams.planeSegments/4);
-store.rotation.y = -Math.PI/2;
-
-fullDiner.add(indoorScene);
-fullDiner.add(boba);
-fullDiner.add(store);
-fullDiner.rotation.y = Math.PI/2;
-fullDiner.position.set(20, 0, 0);
-
-otherBuilding.position.set(-10,0,0);
-otherBuilding.rotation.y = Math.PI/3;
-
-nighthawks.add(fullDiner);
-nighthawks.add(otherBuilding);
-renderer.sortObjects = false
-
-
-scene.add(nighthawks);
-
-
 
 
 
@@ -183,8 +294,8 @@ scene.add(nighthawks);
 // TESTING WITH LIGHTING
 //-------------------------
 
-    // //create a spotlight
-    // var spotLight = new THREE.SpotLight( sceneParams.lightColor );
+    //create a spotlight
+    // var spotLight = new THREE.SpotLight( sceneParams.lightColor, 0.5);
     // spotLight.name = "spot";
     // spotLight.position.set(10,50,50); 
 
@@ -193,7 +304,7 @@ scene.add(nighthawks);
     // scene.add(spotLight);
     // scene.add(spotLight.target);
 
-var ambLight = new THREE.AmbientLight( sceneParams.lightColor); // soft white light 
+var ambLight = new THREE.AmbientLight(0xF8C471); // soft white light 
     ambLight.name = "ambient";
     scene.add( ambLight );
 
@@ -217,7 +328,7 @@ var state = TW.cameraSetup(renderer,
                            cameraFOVY);
 
 
-TW.render();
+
 
   
 </script>

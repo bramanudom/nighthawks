@@ -1,5 +1,5 @@
 //creates the outside of the store
-function createStoreFront(){
+function createStoreFront(texture){
 
 var storeFront = new THREE.Object3D();
 
@@ -8,9 +8,9 @@ var sceneParams = {
   counterRadiusSegments:32,
   radiusSegments: 2,
   tubularSegments: 30,
-  woodColor: 0x00B777,
+  woodColor: 0x165E45,
   windowColor: 0xffffff,
-  wallColor: 0xEEEEB9,
+  wallColor: 0xBDBD9E,
   metalShininess: 5,
   baseRadius: 4,
   spotlightColor: 0xffffff,
@@ -27,7 +27,7 @@ var sceneParams = {
 
 //------------------------------------------------------------
 // Creates the outside view of the store. Windows are created and colored 
-// as a transparent object.
+// as a transparent object
 //------------------------------------------------------------
 function createStore(){
 
@@ -111,31 +111,29 @@ createStore();
 // vectors. Had to use arbitrary constants to get the counter to fit
 // well. 
 // 
-// Takes in color as a parameter
+// Takes in optional paramters color and texture
 //------------------------------------------------------------
-function createCeiling(c){
+function createCeiling(c, texture){
 
   ceiling = new THREE.Object3D();
 
   var geometry = new THREE.PlaneGeometry( sceneParams.ceilingRectangleHeight, sceneParams.ceilingRectangleWidth );
   var material = new THREE.MeshBasicMaterial( {color: c || sceneParams.wallColor, side: THREE.DoubleSide} );
+  // if the optional texture argument is provided map it to the material
+  if(texture) material.map = texture;
   var rectangle = new THREE.Mesh( geometry, material );
 
   var geometry2 = new THREE.PlaneGeometry( sceneParams.ceilingRectangleHeight*.85, sceneParams.ceilingRectangleWidth*.95 );
-  var material2 = new THREE.MeshBasicMaterial( {color: c || sceneParams.wallColor, side: THREE.DoubleSide} );
-  var rectangle2 = new THREE.Mesh( geometry2, material2 );
+  var rectangle2 = new THREE.Mesh( geometry2, material );
 
   var geometry3 = new THREE.PlaneGeometry( sceneParams.ceilingRectangleHeight, sceneParams.ceilingRectangleWidth*.9);
-  var material3 = new THREE.MeshBasicMaterial( {color: c || sceneParams.wallColor, side: THREE.DoubleSide} );
-  var rectangle3 = new THREE.Mesh( geometry3, material3 );
+  var rectangle3 = new THREE.Mesh( geometry3, material );
 
   var geometrySpot = new THREE.PlaneGeometry( sceneParams.ceilingSpotRadius*1.2, sceneParams.ceilingSpotRadius*1.2 );
-  var materialSpot = new THREE.MeshBasicMaterial( { color: c || sceneParams.wallColor, side: THREE.DoubleSide} );
-  var spot = new THREE.Mesh( geometrySpot, materialSpot );
+  var spot = new THREE.Mesh( geometrySpot, material);
 
   var geometryCorner = new THREE.CircleGeometry( sceneParams.ceilingSpotRadius*.5, sceneParams.counterRadiusSegments);
-  var materialCorner = new THREE.MeshBasicMaterial( { color: c || sceneParams.wallColor, side: THREE.DoubleSide} );
-  var spotCorner = new THREE.Mesh( geometryCorner, materialCorner );
+  var spotCorner = new THREE.Mesh( geometryCorner, material );
 
   ceiling.add(rectangle);
   ceiling.add(rectangle2);
@@ -171,11 +169,17 @@ function createCeiling(c){
   spotCorner.scale.set(1,.8,1);
 
   ceiling.position.y = sceneParams.sideWallHeight;
+  return ceiling;
 
-  storeFront.add(ceiling);
+  //storeFront.add(ceiling);
   }
 
-  createCeiling();
+  ceiling = createCeiling();
+  storeFront.add(ceiling);
+
+  ground = createCeiling(texture);
+  ground.position.y = 0;
+  storeFront.add(ground);
 
 return storeFront;
 }

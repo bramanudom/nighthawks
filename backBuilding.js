@@ -34,13 +34,15 @@ function backRoom(){
 	   			materialArray.push(new THREE.MeshPhongMaterial(
 	          							materialParams));
 	   			break;
-	   		case 3:
+	   		case 2:
 	   			materialParams.color = sceneParams.edgeColor;
 	   			materialArray.push(new THREE.MeshPhongMaterial(materialParams));
 	   			break;
 
 	   		default:
-	          materialArray.push(new THREE.MeshPhongMaterial(materialParams));
+	   			materialParams.color = sceneParams.backRoomColor;
+	   			materialParams.side = THREE.DoubleSide;
+	          	materialArray.push(new THREE.MeshPhongMaterial(materialParams));
 	    }
    	}
 
