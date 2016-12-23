@@ -54,35 +54,63 @@ var renderer = new THREE.WebGLRenderer();
 TW.mainInit(renderer, scene);
 
 //-------------------------
-// the containing room 
+// the containing space for the entire scene
 //-------------------------
-function createRoom(){
-  //Creating the environment --> the room
-  var roomGeometry = new THREE.BoxGeometry(sceneParams.planeSegments,sceneParams.planeSegments*2,sceneParams.planeSegments);
-  var materialArray = [];
+function createSpace(){
 
-  // [+X, -X, +Y, -Y, -Z, +Z]
-  // [right, left, ceiling, floor, back, front]
-  var faceColors = [sceneParams.topColor, sceneParams.topColor, sceneParams.topColor, sceneParams.botColor, sceneParams.topColor,sceneParams.topColor ];
+  // -- ATTEMPTING TO TURN THE ROOM INTO A HALF DOME -- // 
+  space = new THREE.Object3D();
 
-  for(var i = 0; i < 6; i++) {
-    if(i == 3){
-      materialArray.push(new THREE.MeshPhongMaterial({
-          color: faceColors[i],
+  var roomGeometry = new THREE.SphereGeometry(70, 32, 32, 0, Math.PI*2, 0, Math.PI/2 );
+  var roomMaterial = new THREE.MeshPhongMaterial({
+          color: sceneParams.topColor,
           side: THREE.DoubleSide,
-          depthTest: true}));
-    } else {
-      materialArray.push(new THREE.MeshPhongMaterial({
-          color: faceColors[i],
-          side: THREE.BackSide,
-          depthTest: true}));
-          }
-    }
+          depthTest: true});
 
-  var roomMaterial = new THREE.MeshFaceMaterial(materialArray);
+  // adding a plane as a ground 
+
+  var planeGeometry = new THREE.PlaneGeometry( 150, 150, 32 );
+  var planeMaterial = new THREE.MeshPhongMaterial({
+          color: sceneParams.botColor,
+          side: THREE.DoubleSide,
+          depthTest: true});
+  var plane = new THREE.Mesh( planeGeometry, planeMaterial );
+
+
+
+  
+  // //Creating the environment --> the room
+  // var roomGeometry = new THREE.BoxGeometry(sceneParams.planeSegments,sceneParams.planeSegments*2,sceneParams.planeSegments);
+  // var materialArray = [];
+
+  // // [+X, -X, +Y, -Y, -Z, +Z]
+  // // [right, left, ceiling, floor, back, front]
+  // var faceColors = [sceneParams.topColor, sceneParams.topColor, sceneParams.topColor, sceneParams.botColor, sceneParams.topColor,sceneParams.topColor ];
+
+  // for(var i = 0; i < 6; i++) {
+  //   if(i == 3){
+  //     materialArray.push(new THREE.MeshPhongMaterial({
+  //         color: faceColors[i],
+  //         side: THREE.DoubleSide,
+  //         depthTest: true}));
+  //   } else {
+  //     materialArray.push(new THREE.MeshPhongMaterial({
+  //         color: faceColors[i],
+  //         side: THREE.BackSide,
+  //         depthTest: true}));
+  //         }
+  //   }
+
+  // var roomMaterial = new THREE.MeshFaceMaterial(materialArray);
   var room = new THREE.Mesh(roomGeometry, roomMaterial);
 
-  return room;
+  plane.rotation.x = -Math.PI/2;
+
+
+  space.add(room);
+  space.add(plane);
+
+  return space;
 }
 
 //-------------------------
@@ -90,7 +118,9 @@ function createRoom(){
 //-------------------------
 renderer.sortObjects = false;
 var nighthawks = new THREE.Object3D();
-nighthawks.add(createRoom());
+var space = createSpace();
+space.position.set(0,-50, 0);
+nighthawks.add(space);
 var backBuilding = backBuilding();
 backBuilding.position.set(0, -100/2+(15/2), -25+(10/2));
 nighthawks.add(backBuilding);
@@ -163,15 +193,15 @@ scene.add( directionalLight );
 // camera set-up
 //-------------------------
 
-var cameraFOVY = 100;
+var cameraFOVY = 5;
 var state = TW.cameraSetup(renderer,
                            scene,
-                           {minx: -sceneParams.planeSegments/2, 
-                            maxx: sceneParams.planeSegments/2,
-                            miny: -sceneParams.planeHeight*3,
-                            maxy:sceneParams.planeHeight/2,
-                            minz: -sceneParams.planeSegments/2, 
-                            maxz: sceneParams.planeSegments/2},
+                           {minx: -30, 
+                            maxx: 30,
+                            miny: -100,
+                            maxy: 30,
+                            minz: -30, 
+                            maxz: 30},
                            cameraFOVY);
 
 
