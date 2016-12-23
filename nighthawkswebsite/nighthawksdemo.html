@@ -33,6 +33,15 @@
     <script src="https://cs.wellesley.edu/~cs307/threejs/libs/tw.js"></script>
     <script src="https://cs.wellesley.edu/~cs307/threejs/libs/OrbitControls.js"></script>
     <script src="atan-bar-stool.js"></script>
+      
+      <style>
+            canvas {
+          display: block;
+          margin-left: 45%;
+          width: 50%;
+          height: 500px;
+      }
+      </style>
   </head>
 
   <body>
@@ -51,8 +60,7 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#inside">Process</a></li>
+            <li><a href="#about">Process</a></li>
             <li><a href="#demo">Demo</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
@@ -79,18 +87,6 @@
     </div>
       
     <div class="container3">
-<!--
-        <div id="process">
-            <h2 class="text-left">Process</h2>
-            <h3>We created the following objects for our scene:</h3>
-                <ul class="lead">
-
-                    <li><a href="#inside">Inside the Bar</a></li>
-                    <li><a href="#background">Background</a></li>
-                    <li><a href="#storefront">Storefront</a></li>
-                </ul>
-        </div>
--->
   
     <div id="inside">
         <h2>Inside the Bar</h2>
@@ -117,16 +113,41 @@
         
      <div id="storefront">
         <h2>The Storefront</h2>
-        <div class="row">
-            <div class="col-xs-10 col-sm-8 col-md-8">
-                <img src="imgs/storefront">
-            </div>
-            <div class="col-sm-4 col-md-4">
-                <p class="lead">Creating the ceiling of the store was a challenge that we encountered while constructing our objects. Whether or not the proportions of the bar were accurately portrayed in Edward Hopper's scene, we used as much information about the perspective of the scene as we could get and settled on a store with a three walls and a curved window.</p>
-            </div>
+        <img id="store" src="imgs/storefront">
+        <p class="lead">Creating the ceiling of the store was a challenge that we encountered while constructing our objects. Whether or not the proportions of the bar were accurately portrayed in Edward Hopper's scene, we used as much information about the perspective of the scene as we could get and settled on a store with a three walls and a curved window.</p>
         </div>
-    </div>  
+    
 
+     <div id="background">
+        <h2>The Background</h2>
+         <div class="row">
+            <div class="col-xs-6 col-sm-3 col-md-3">
+                <img src="./imgs/background1.png">
+            </div>
+            <div class="col-xs-6 col-sm-3 col-md-3">
+                    <img src="./imgs/background4.png">
+            </div>
+            <div class="col-xs-6 col-sm-3 col-md-3">
+                    <img src="./imgs/background2.png">
+            </div>
+            <div class="col-xs-6 col-sm-3 col-md-3">
+                    <img src="./imgs/background3.png">
+            </div>
+         </div>
+        <p class="lead">To simplify the storefronts in the background, we applied a color gradient to give the building further depth. The individual rooms were created by one room object that interated across rows and columns to form an apartment building. The height at which the blinds are lowered are generated randomly.</p>
+    </div>
+    </div>
+        
+    <div id="demo" class="container4">
+    <h2>Demo</h2>
+    <p class="lead">DELETE THIS WHOLE P AND PLACE SCRIPT INSIDE DEMO DIV<br>-<br>-<br>-<br>.<br>.<br>:0<br>:o<br>:')<br>:)<br>and realign accordingly<br><br><br><br><br><br>DELETE LOL</p>
+    </div> 
+      
+    <div id="contact" class="container5">
+    <h2>Contact</h2>
+        <p class="lead"><br><a href="mailto:atan4@wellesley.edu">atan4@wellesley.edu</a><br>
+            <a href="mailto:bramanud@wellesley.edu">bramanud@wellesley.edu</a></p><hr>
+        <p class="lead"><br><a href="https://github.com/bramanudom/nighthawks">Github</a></p>
     </div>
       
     <!-- Bootstrap core JavaScript
