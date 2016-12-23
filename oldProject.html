@@ -22,7 +22,6 @@
   </head>
 <body>
 <script>
-
 //-------------------------
 // Some parameters
 //-------------------------
@@ -35,62 +34,45 @@ var sceneParams = {
   sillHeight: 1,
   buildingColor: 0x9B2C00,
   sillColor: 0x734B18,
-
   lightColor: 0xD2B433,
-  winRowX: -20,
-  winRowY: -29,
-  winRowZ: -15.5,
   // spotlightExponent: 200,
   //                   spotlightIntensity: 2,
   //                   spotlightDistance: 50,
   //                   spotlightAngle: Math.PI/6,
   //                   spotlightPenumbra: 0,
   //                   spotlightDecay: 0.01,
-  // windowRow.position.set(-20, -29, -15.5);
 };
 //-------------------------
 // scene and renderer
 //-------------------------
-
-
 var scene = new THREE.Scene();
 var renderer = new THREE.WebGLRenderer();
 TW.mainInit(renderer, scene);
-
 //-------------------------
 // the containing space for the entire scene
 //-------------------------
 function createSpace(){
-
   // -- ATTEMPTING TO TURN THE ROOM INTO A HALF DOME -- // 
   space = new THREE.Object3D();
-
   var roomGeometry = new THREE.SphereGeometry(70, 32, 32, 0, Math.PI*2, 0, Math.PI/2 );
   var roomMaterial = new THREE.MeshPhongMaterial({
           color: sceneParams.topColor,
           side: THREE.DoubleSide,
           depthTest: true});
-
   // adding a plane as a ground 
-
   var planeGeometry = new THREE.PlaneGeometry( 150, 150, 32 );
   var planeMaterial = new THREE.MeshPhongMaterial({
           color: sceneParams.botColor,
           side: THREE.DoubleSide,
           depthTest: true});
   var plane = new THREE.Mesh( planeGeometry, planeMaterial );
-
-
-
   
   // //Creating the environment --> the room
   // var roomGeometry = new THREE.BoxGeometry(sceneParams.planeSegments,sceneParams.planeSegments*2,sceneParams.planeSegments);
   // var materialArray = [];
-
   // // [+X, -X, +Y, -Y, -Z, +Z]
   // // [right, left, ceiling, floor, back, front]
   // var faceColors = [sceneParams.topColor, sceneParams.topColor, sceneParams.topColor, sceneParams.botColor, sceneParams.topColor,sceneParams.topColor ];
-
   // for(var i = 0; i < 6; i++) {
   //   if(i == 3){
   //     materialArray.push(new THREE.MeshPhongMaterial({
@@ -104,35 +86,24 @@ function createSpace(){
   //         depthTest: true}));
   //         }
   //   }
-
   // var roomMaterial = new THREE.MeshFaceMaterial(materialArray);
   var room = new THREE.Mesh(roomGeometry, roomMaterial);
-
   plane.rotation.x = -Math.PI/2;
-
-
   space.add(room);
   space.add(plane);
-
   return space;
 }
-
 //-------------------------
 // invoking objects 
 //-------------------------
 renderer.sortObjects = false;
 var nighthawks = new THREE.Object3D();
-space = createSpace();
+var space = createSpace();
 space.position.set(0,-50, 0);
 nighthawks.add(space);
-
-var otherBuilding = new THREE.Object3D();
-
-
-backBuilding = backBuilding();
+var backBuilding = backBuilding();
 backBuilding.position.set(0, -100/2+(15/2), -25+(10/2));
-otherBuilding.add(backBuilding);
-
+nighthawks.add(backBuilding);
 var windowRow = new THREE.Object3D();
 for(var i = 0; i < 5; i++){
   oneWindow = Window();
@@ -140,94 +111,49 @@ for(var i = 0; i < 5; i++){
   oneWindow.position.set(10*i, 0, 0);
   windowRow.add(oneWindow);
 }
-windowRow.position.set( sceneParams.winRowX, 
-                        sceneParams.winRowY, 
-                        sceneParams.winRowZ);
-otherBuilding.add(windowRow);
-
-
-
-//adding 3 more window rows
-for (var j = 0; j < 3; j++){
-  newWindow = windowRow.clone();
-  newWindow.position.y = sceneParams.winRowY + ((j+1) * 10);
-  otherBuilding.add(newWindow);
-
-}
-
-
-
-
-// ADDING FULL DINER 
-
-fullDiner = new THREE.Object3D();
-
+windowRow.position.set(-20, -29, -15.5);
+nighthawks.add(windowRow);
 indoorScene = indoor();
 indoorScene.scale.set(.25,.25,.25);
 indoorScene.rotation.y = -Math.PI/4;
 indoorScene.position.set(sceneParams.planeSegments/4,
                         -sceneParams.planeSegments,
                         sceneParams.planeSegments/4);
+nighthawks.add(indoorScene);
 boba = Boba();
-
 boba.scale.set(.25,.25,.25);
 boba.position.set(sceneParams.planeSegments/4,
                         -sceneParams.planeSegments+6, // MAKE THIS MORE MODULAR LATER
                         sceneParams.planeSegments/4);
-
-
+nighthawks.add(boba);
 var store = createStoreFront();
 store.scale.set(.5,.5,.5);
 store.position.set(sceneParams.planeSegments/4.5,
                         -sceneParams.planeSegments,
                         sceneParams.planeSegments/4);
 store.rotation.y = -Math.PI/2;
-
-fullDiner.add(indoorScene);
-fullDiner.add(boba);
-fullDiner.add(store);
-fullDiner.rotation.y = Math.PI/2;
-fullDiner.position.set(20, 0, 0);
-
-otherBuilding.position.set(-10,0,0);
-otherBuilding.rotation.y = Math.PI/3;
-
-nighthawks.add(fullDiner);
-nighthawks.add(otherBuilding);
-
-
+nighthawks.add(store);
 scene.add(nighthawks);
-
-
-
-
-
 //-------------------------
 // TESTING WITH LIGHTING
 //-------------------------
-
     // //create a spotlight
     // var spotLight = new THREE.SpotLight( sceneParams.lightColor );
     // spotLight.name = "spot";
     // spotLight.position.set(10,50,50); 
-
     // spotLight.target.position.set = (0,20,30);
     
     // scene.add(spotLight);
     // scene.add(spotLight.target);
-
 var ambLight = new THREE.AmbientLight( sceneParams.lightColor); // soft white light 
     ambLight.name = "ambient";
     scene.add( ambLight );
-
-
 var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
 directionalLight.position.set( 0, 0, 1 );
 scene.add( directionalLight );
 //-------------------------
 // camera set-up
 //-------------------------
-
 var cameraFOVY = 5;
 var state = TW.cameraSetup(renderer,
                            scene,
@@ -238,10 +164,7 @@ var state = TW.cameraSetup(renderer,
                             minz: -30, 
                             maxz: 30},
                            cameraFOVY);
-
-
 TW.render();
-
   
 </script>
 </body>
