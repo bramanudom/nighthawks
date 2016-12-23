@@ -1,6 +1,10 @@
+<!-- This scene was inspired by Nighthawks, a classic American painting by artist Edward Hopper. 
+Created by Adri Tan and Pet Ramanudom
+2016
+Wellesley Course CS307 -->
 <html>
   <head>
-    <title>Nighthawks Window</title>
+    <title>Nighthawks</title>
     <style>
       
       canvas {
@@ -24,6 +28,10 @@
 
   </head>
 <body>
+  <center>
+    <h1>Recreation of Nighthawks</h1>
+    <h3>Created by Adri Tan and Pet Ramanudom </h3>
+  </center>
 <script>
 
 //-------------------------
@@ -35,16 +43,12 @@ var sceneParams = {
   planeSegments: 50,
   topColor: 0x34495E, //dark midnight for the
   botColor: 0x5DADE2, //cool dark greyish teal
-  sillHeight: 1,
   buildingColor: 0x9B2C00,
-  sillColor: 0x734B18,
-
-  lightColor: 0xD2B433,
   winRowX: -20,
   winRowY: -29,
   winRowZ: -15.5,
-
 };
+
 //-------------------------
 // scene and renderer
 //-------------------------
@@ -53,17 +57,17 @@ var sceneParams = {
 var scene = new THREE.Scene();
 var renderer = new THREE.WebGLRenderer();
 
-//--------------
+//--------------------------------------------------------------------
 // Create Entire Scene
-// Wrapping function allows us to load textures before creating // the scene 
-//--------------
+// Wrapping function allows us to load textures before creating all of the components of the scene
+//--------------------------------------------------------------------
 function createScene(){
   TW.loadTextures(
-    ["./textures/concrete.jpg", "./textures/nightSky.jpg", "./textures/decorativeConcrete.jpg", "./textures/checkertile.jpg"],
+    ["./textures/concrete.jpg", "./textures/nightSky.jpg", "./textures/decorativeConcrete.jpg"],
     function(textures){
       console.log("textures have loaded");
       textures[0].wrapS = THREE.RepeatWrapping;
-     // textures[0].wrapT = THREE.RepeatWrapping;
+      textures[0].wrapT = THREE.RepeatWrapping;
       textures[0].repeat.set(1,1); 
     
 
@@ -75,10 +79,9 @@ function createScene(){
       textures[2].wrapT = THREE.RepeatWrapping;
       textures[2].repeat.set(4,4); 
 
-
-  //-------------------------
-  // the containing space for the entire scene 
-  //-------------------------
+  //--------------------------------------------------------
+  // the containing the space for us to enter and observe the nighthawk scene
+  //--------------------------------------------------------
     function createSpace(sky, ground, road){
 
       //Inside of dome will be texture mapped 
@@ -93,7 +96,6 @@ function createScene(){
       roomMaterial = new THREE.MeshPhongMaterial(materialParams);
 
       // GROUND PLANE 
-
       planeGeometry = new THREE.PlaneGeometry( 200, 200, 32 );
       materialParams.color = sceneParams.botColor;
       materialParams.map = ground;
@@ -103,20 +105,23 @@ function createScene(){
       // CONCRETE ROAD 
       materialParams.map = road;
       materialParams.color = 0x283747;
-      roadGeom = new THREE.PlaneGeometry(20, 200, 32);
+      roadGeom = new THREE.PlaneGeometry(20, 180, 32);
       roadMat = new THREE.MeshPhongMaterial(materialParams);
     
       
 
-
+      // create the meshes 
       plane = new THREE.Mesh( planeGeometry, planeMaterial);
       room = new THREE.Mesh(roomGeometry, roomMaterial);
       road = new THREE.Mesh(roadGeom, roadMat);
 
+      // translating the ground plane and roads
       plane.rotation.x = -Math.PI/2;
       road.rotation.x = -Math.PI/2;
       road.rotation.z = -Math.PI/6;
       road.position.set(-1, 1, 0);
+      
+      // add them to the space
       space.add(room);
       space.add(plane);
       space.add(road);
@@ -124,27 +129,33 @@ function createScene(){
       return space;
     }
 
-    //-------------------------
-    // invoking objects 
-    //-------------------------
-   
-    //aidan's furniture collection
-    var Furniture = new aidanFurniture();
-
-    renderer.sortObjects = false;
+    // contrainer nightHawks contains EVERYTHING
     var nighthawks = new THREE.Object3D();
     space = createSpace(textures[1], textures[2], textures[0]);
     space.position.set(0,-50, 0);
     nighthawks.add(space);
 
+    //---------------------------------------------------
+    // INVOKING ALL OBJECTS FOR THE SCENE
+    //---------------------------------------------------
+   
+    
+  // ------ EXTRANEOUS BUILDINGS -------// 
+
+    // container has all components for buildings that are not the main diner 
     var otherBuilding = new THREE.Object3D();
+
+    // Invoking Aidan's furniture from the library for later use
+    var Furniture = new aidanFurniture();
 
 
     backBuilding = backBuilding();
     backBuilding.position.set(0, -100/2+(15/2), -25+(10/2));
     otherBuilding.add(backBuilding);
 
+    //one row of windows for upperportions of the building
     var windowRow = new THREE.Object3D();
+
     for(var i = 0; i < 5; i++){
       oneWindow = Window();
       oneWindow.scale.set(.5,.5,1);
@@ -164,43 +175,41 @@ function createScene(){
     windowRow.position.set( sceneParams.winRowX, 
                             sceneParams.winRowY, 
                             sceneParams.winRowZ);
-
-    // add some furniture inside of the main building
-    // .. utilizes the Aidan's library contribution
-    var furnitureSet = new THREE.Object3D();
-    var table = Furniture.Table();
-    table.scale.set(3,3,3);
-    table.position.set(-20, -100/2, -25+(10/2));
-    var chair = Furniture.Chair();
-    chair.scale.set(3,3,3);
-    chair.position.set(-15,-100/2, -25+(10/2));
-    furnitureSet.add(table);
-
-    furnitureSet.add(chair);
-    otherBuilding.add(furnitureSet);
-
-    furnitureSet2 = furnitureSet.clone();
-   
-    furnitureSet2.position.x = 25;
-
-
-    var chair2 = chair.clone();
-    chair.position.x = 20;
-
-    
-    otherBuilding.add(furnitureSet2);
-    otherBuilding.add(chair2);
     otherBuilding.add(windowRow);
 
-
-
-    //adding 3 more window rows
+    //adding 3 more window rows to the building (build upwards)
     for (var j = 0; j < 3; j++){
       newWindow = windowRow.clone();
       newWindow.position.y = sceneParams.winRowY + ((j+1) * 10);
       otherBuilding.add(newWindow);
-
     }
+
+    
+    // table and chair set to be used as components of the building
+    var furnitureSet = new THREE.Object3D();
+    
+    var table = Furniture.Table();
+    table.scale.set(3,3,3);
+    table.position.set(-20, -100/2, -25+(10/2));
+    
+    var chair = Furniture.Chair();
+    chair.scale.set(3,3,3);
+    chair.position.set(-15,-100/2, -25+(10/2));
+    
+    furnitureSet.add(table);
+    furnitureSet.add(chair);
+    otherBuilding.add(furnitureSet);
+
+    furnitureSet2 = furnitureSet.clone();
+    furnitureSet2.position.x = 25;
+
+    // extra chair to avoid being too symmetrical 
+    var chair2 = chair.clone();
+    chair.position.x = 20;
+
+    otherBuilding.add(furnitureSet2);
+    otherBuilding.add(chair2);
+
 
     // adding the building Sides
     var buildingSideGeometry = new THREE.PlaneGeometry(11, 40, 32);
@@ -208,7 +217,7 @@ function createScene(){
               color: 0x3E421A,
               side: THREE.DoubleSide,
               depthTest: true});
-    var buildingSide = new THREE.Mesh(buildingSideGeometry,                                buildingMaterial);
+    var buildingSide = new THREE.Mesh(buildingSideGeometry, buildingMaterial);
     buildingSide.position.set(-25, -15, -21);
     buildingSide.rotation.y = Math.PI/2;
 
@@ -224,31 +233,40 @@ function createScene(){
     otherBuilding.add(buildingSide2);
     otherBuilding.add(buildingBack);
 
+    //place the building slightly above the ground plane to avoid pixel rendering issues
+    otherBuilding.position.set(-10,2,0);
+
+    // create another extraneous building
+    otherBuilding2 = otherBuilding.clone();
+
+    // make it smaller to create an illusion of depth 
+    otherBuilding2.scale.set(.5,.5,.5);
+    otherBuilding2.position.set(0,-22,-30);
+    otherBuilding.rotation.y = Math.PI/3;
 
 
 
 
-
-
-
-    // ADDING FULL DINER 
-
+  // ------ MAIN DINER FOR NIGHTHAWK SCENE -------// 
+     // container will glue all the parts of the entire diner together
     fullDiner = new THREE.Object3D();
 
+    // indoor scene includes the stools, canisters, and acoutner top
     indoorScene = indoor();
     indoorScene.scale.set(.25,.25,.25);
     indoorScene.rotation.y = -Math.PI/3;
     indoorScene.position.set(sceneParams.planeSegments/3.4,
                             -sceneParams.planeSegments,
                             sceneParams.planeSegments/3.5);
-    boba = Boba();
 
+    // adding boba to the counter top for a modern touch
+    boba = Boba();
     boba.scale.set(.25,.25,.25);
     boba.position.set(sceneParams.planeSegments/4,
-                            -sceneParams.planeSegments+6, // MAKE THIS MORE MODULAR LATER
+                            -sceneParams.planeSegments+5, 
                             sceneParams.planeSegments/4);
 
-
+    // the storefront is the encompassing building that has all the furniture like components of the diner
     var store = createStoreFront();
     store.scale.set(.5,.5,.5);
     store.position.set(sceneParams.planeSegments/4.5,
@@ -256,62 +274,69 @@ function createScene(){
                             sceneParams.planeSegments/4);
     store.rotation.y = -Math.PI/2;
 
+    // add all the diner parts ot the container
+
     fullDiner.add(indoorScene);
     fullDiner.add(boba);
     fullDiner.add(store);
     fullDiner.rotation.y = Math.PI/2;
+
     //place the diner slightly above the ground plane to avoid pixel rendering issues
-    fullDiner.position.set(20, 2, 0);
+    fullDiner.position.set(20, 1, 0);
 
-    otherBuilding.position.set(-10,2,0);
-    otherBuilding2 = otherBuilding.clone();
-
-    otherBuilding2.scale.set(.5,.5,.5);
-    otherBuilding2.position.set(0,-22,-30);
-    otherBuilding.rotation.y = Math.PI/3;
-
-
-
+    // add all of these components to the scene container
     nighthawks.add(fullDiner);
     nighthawks.add(otherBuilding);
     nighthawks.add(otherBuilding2);
-    nighthawks.position.set(0,0,10);
     renderer.sortObjects = false
 
-
-
+    // finally, add this to the actual THREE.scene
     scene.add(nighthawks);
+
+    // render, at this point the objects should be rendered with all necessary textures
     TW.render();
     });
 }
 
+// invoke wrapping function that will populate the THREE.scene
 createScene();
 TW.mainInit(renderer, scene);
 
 
 
 //-------------------------
-// TESTING WITH LIGHTING
+// ADDING LIGHTING COMPONENTS 
 //-------------------------
 
-    //create a spotlight
-    // var spotLight = new THREE.SpotLight( sceneParams.lightColor, 0.5);
-    // spotLight.name = "spot";
-    // spotLight.position.set(10,50,50); 
+//create a spotlight that exists inside the diner and shines outwards
+var spotLight = new THREE.SpotLight( 0xC2DFF2, .4 , 500, Math.PI/3.5);  
+spotLight.name = "diner spot";
+spotLight.target.position.set(-10, -20, -3);
+spotLight.position.set(50, 0, 0);;
+scene.add(spotLight);
+scene.add(spotLight.target);
+ 
 
-    // spotLight.target.position.set = (0,20,30);
-    
-    // scene.add(spotLight);
-    // scene.add(spotLight.target);
+//create a spotlight that exists from inside the very back and also shines outwards, towards the side building 
+var spotLight2 = new THREE.SpotLight( 0xC2DFF2, .4 , 100, Math.PI/4);  
+spotLight2.name = "bb spot";
+spotLight2.position.set(0, -22, -70);; 
+spotLight2.target.position.set(-40,-20,0);;
+scene.add(spotLight2);
+scene.add(spotLight2.target);
 
-var ambLight = new THREE.AmbientLight(0xF8C471); // soft white light 
-    ambLight.name = "ambient";
-    scene.add( ambLight );
 
 
-var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-directionalLight.position.set( 0, 0, 1 );
+var ambLight = new THREE.AmbientLight(0xF8C471); // slightly yellow light to give the scene a dark feel
+ambLight.name = "ambient";
+scene.add( ambLight );
+
+// moonlight from up above and back
+var directionalLight = new THREE.DirectionalLight( 0xF8C471, 0.4 );
+directionalLight.position.set( .5, 1, -.5 );
 scene.add( directionalLight );
+
+
 //-------------------------
 // camera set-up
 //-------------------------
@@ -327,10 +352,6 @@ var state = TW.cameraSetup(renderer,
                             maxz: 30},
                            cameraFOVY);
 
-
-
-
-  
 </script>
 </body>
 </html>

@@ -23,9 +23,12 @@
 
 var scene = new THREE.Scene();
 var renderer = new THREE.WebGLRenderer();
-
-store = createStoreFront();
-scene.add(store)
+TW.loadTextures(
+    ["./textures/concrete.jpg", "./textures/nightSky.jpg", "./textures/decorativeConcrete.jpg", "./textures/checkertile.jpg"],
+    function(textures){
+      store = createStoreFront(textures[2]);
+      scene.add(store)
+    });
 
 TW.mainInit(renderer, scene);
 
