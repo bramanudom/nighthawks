@@ -82,30 +82,6 @@ function createSpace(){
 
 
 
-  
-  // //Creating the environment --> the room
-  // var roomGeometry = new THREE.BoxGeometry(sceneParams.planeSegments,sceneParams.planeSegments*2,sceneParams.planeSegments);
-  // var materialArray = [];
-
-  // // [+X, -X, +Y, -Y, -Z, +Z]
-  // // [right, left, ceiling, floor, back, front]
-  // var faceColors = [sceneParams.topColor, sceneParams.topColor, sceneParams.topColor, sceneParams.botColor, sceneParams.topColor,sceneParams.topColor ];
-
-  // for(var i = 0; i < 6; i++) {
-  //   if(i == 3){
-  //     materialArray.push(new THREE.MeshPhongMaterial({
-  //         color: faceColors[i],
-  //         side: THREE.DoubleSide,
-  //         depthTest: true}));
-  //   } else {
-  //     materialArray.push(new THREE.MeshPhongMaterial({
-  //         color: faceColors[i],
-  //         side: THREE.BackSide,
-  //         depthTest: true}));
-  //         }
-  //   }
-
-  // var roomMaterial = new THREE.MeshFaceMaterial(materialArray);
   var room = new THREE.Mesh(roomGeometry, roomMaterial);
 
   plane.rotation.x = -Math.PI/2;
@@ -164,10 +140,10 @@ fullDiner = new THREE.Object3D();
 
 indoorScene = indoor();
 indoorScene.scale.set(.25,.25,.25);
-indoorScene.rotation.y = -Math.PI/4;
-indoorScene.position.set(sceneParams.planeSegments/4,
+indoorScene.rotation.y = -Math.PI/3;
+indoorScene.position.set(sceneParams.planeSegments/3.4,
                         -sceneParams.planeSegments,
-                        sceneParams.planeSegments/4);
+                        sceneParams.planeSegments/3.5);
 boba = Boba();
 
 boba.scale.set(.25,.25,.25);
@@ -194,6 +170,7 @@ otherBuilding.rotation.y = Math.PI/3;
 
 nighthawks.add(fullDiner);
 nighthawks.add(otherBuilding);
+renderer.sortObjects = false
 
 
 scene.add(nighthawks);

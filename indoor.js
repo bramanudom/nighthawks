@@ -388,25 +388,30 @@ cannister.position.y = sceneParamsCounter.counterRadius*1.6;
 cannister2.position.y = sceneParamsCounter.counterRadius*1.6;
 cannister2.position.x = -30;
 
+stools = new THREE.Object3D();
 stool = barStool(sceneParamsCounter.woodColor);
 stool.scale.set(.5,.5, .5);
-stool.position.x = -38;
-stool.position.z = 40;
+stool.position.x = -30;
+stool.position.z = 32;
 
 stool2 = stool.clone();
-stool2.position.x = -55;
-stool2.position.z = 20;
+stool2.position.x = -47;
+stool2.position.z = 12;
 
 stool3= stool.clone();
-stool3.position.x = -18;
-stool3.position.z = 60;
+stool3.position.x = -10;
+stool3.position.z = 52;
+
+stools.add(stool,stool2,stool3);
+stools.scale.set(1.2,1.2,1.2);
 
 indoorScene.add(cannister);
 indoorScene.add(cannister2);
 indoorScene.add(counter);
-indoorScene.add(stool);
-indoorScene.add(stool2);
-indoorScene.add(stool3);
+indoorScene.add(stools);
+// indoorScene.add(stool);
+// indoorScene.add(stool2);
+// indoorScene.add(stool3);
 
 return indoorScene;
 

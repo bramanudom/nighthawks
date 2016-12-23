@@ -1,17 +1,17 @@
 function backBuilding(){
   
-  var sceneParams = {
-  backRoomH: 15, 
-  backRoomD: 10,
-  backRoomW: 50,
-  backRoomColor: 0x433E35, //warm-toned grey
-  glassColor: 0x82B4AB, //frostygreyteal
-  edgeColor: 0x145851,//darkgreyteal
-  edgeW: 5,
-  edgeH: 3,
-  glassW: 20,
-  glassH: 12
-}
+	var sceneParams = {
+	  	backRoomH: 15, 
+	 	backRoomD: 10,
+	 	backRoomW: 50,
+	  	backRoomColor: 0x433E35, //warm-toned grey
+	  	glassColor: 0x82B4AB, //frostygreyteal
+	  	edgeColor: 0x145851,//darkgreyteal
+	  	edgeW: 5,
+	  	edgeH: 3,
+	  	glassW: 20,
+	  	glassH: 12,
+	}
 
 var building = new THREE.Object3D();
 
@@ -21,23 +21,29 @@ function backRoom(){
 										  	sceneParams.backRoomH,
 										  	sceneParams.backRoomD);
   var materialArray = [];
+  materialParams = {
+  	color: sceneParams.backRoomColor,
+	side: THREE.DoubleSide,
+	depthTest: true,
+  }
 
+	for(var i = 0; i < 6; i++) {
+	   	switch(i){
+	   		case 4: 
+	   			materialParams.side = THREE.BackSide;
+	   			materialArray.push(new THREE.MeshPhongMaterial(
+	          							materialParams));
+	   			break;
+	   		case 3:
+	   			materialParams.color = sceneParams.edgeColor;
+	   			materialArray.push(new THREE.MeshPhongMaterial(materialParams));
+	   			break;
 
-   for(var i = 0; i < 6; i++) {
-      if (i == 4){
-      materialArray.push(new THREE.MeshPhongMaterial({
-          color: sceneParams.backRoomColor,
-          //side: THREE.BackSide,
+	   		default:
+	          materialArray.push(new THREE.MeshPhongMaterial(materialParams));
+	    }
+   	}
 
-          }));
-          } else {
-          materialArray.push(new THREE.MeshPhongMaterial({
-          color: sceneParams.backRoomColor,
-          side: THREE.DoubleSide,
-
-          }));
-          }
-        }
 
   var roomMaterial = new THREE.MeshFaceMaterial(materialArray);
   var room = new THREE.Mesh(roomGeometry, roomMaterial);
@@ -61,7 +67,7 @@ function sidePane(){
                                          
 
 	for(var i = 0; i < 5; i++){
-	oneEdgeMat = new THREE.MeshPhongMaterial({color: sceneParams.edgeColor + (i*16),
+		oneEdgeMat = new THREE.MeshPhongMaterial({color: sceneParams.edgeColor + (i*16),
 	                                           shininess: 100,
 	                                           side: THREE.DoubleSide, //render both sides of the material
 	                                          });	
