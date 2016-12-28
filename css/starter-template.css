@@ -88,14 +88,24 @@ h2{
     padding-left: 10%;
 }
 
-#demo{
+#demo h2{
     padding-left: 10%;
+}
+
+#demo{
     padding-top: 5%;
     padding-bottom:4%;
 }
 
 #demo h2{
     padding-bottom: 3%;
+}
+
+#details p{
+    padding-right: 10%;
+
+    padding-top:3%;
+    padding-left: 10%;
 }
 
 .container5{
@@ -108,4 +118,9 @@ h2{
     color: white
 }
 
+#proj{
+    border-style: none;
+    width: 90%;
+    
+}
 
